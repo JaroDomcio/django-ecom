@@ -1,0 +1,67 @@
+<h2>Rejestracja</h2>
+{% if messages %}
+    {% for message in messages %}
+        <div>
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<form method="post" novalidate>
+    {% csrf_token %}
+    <div>
+        {{ form.username.label_tag }}
+        {{ form.username }}
+        {% if form.username.errors %}
+            <div>
+                {{ form.username.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.first_name.label_tag }}
+        {{ form.first_name }}
+        {% if form.first_name.errors %}
+            <div>
+                {{ form.first_name.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.last_name.label_tag }}
+        {{ form.last_name }}
+        {% if form.last_name.errors %}
+            <div>
+                {{ form.last_name.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.email.label_tag }}
+        {{ form.email }}
+        {% if form.email.errors %}
+            <div>
+                {{ form.email.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.password1.label_tag }}
+        {{ form.password1 }}
+        {% if form.password1.errors %}
+            <div>
+                {{ form.password1.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <div>
+        {{ form.password2.label_tag }}
+        {{ form.password2 }}
+        {% if form.password2.errors %}
+            <div>
+                {{ form.password2.errors }}
+            </div>
+        {% endif %}
+    </div>
+    <button type="submit">Zarejestruj się</button>
+</form>
