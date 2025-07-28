@@ -9,6 +9,9 @@ def home(request):
     products = Product.objects.all()
     return render(request, 'home.html', {'products':products})
 
+def profile_settings(request):
+    return render(request, 'profile_settings.html')
+
 def login_user(request):
     if request.method == 'POST':
         form = LoginForm(request.POST)

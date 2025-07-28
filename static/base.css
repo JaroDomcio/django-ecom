@@ -1,0 +1,65 @@
+body {
+    padding-top: 80px;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ececec ;
+    padding: 20px 40px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.nav-actions{
+
+}
+
+.logo{
+
+}
+
+.logo-button{
+    font-family: Arial, serif;
+    background: none;
+    cursor: pointer;
+    border: none;
+    font-size: xx-large;
+    font-weight: bolder;
+    color: #2980ef ;
+    text-decoration: none;
+}
+
+.cart-button{
+    font-family: Arial, serif;
+    border: none;
+    cursor: pointer;
+    color: darkgrey;
+    background: none;
+    text-decoration: none;
+}
+
+.cart-button:hover{
+    color:black;
+}
+
+.login-button{
+    font-family: Arial, serif;
+    margin: 0px 15px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    background: none;
+    text-decoration: none;
+    color: inherit;
+}
+
+.login-button:hover{
+    color: green;
+}
+
+
+

@@ -1,5 +1,8 @@
+{% extends 'base.html' %}
 
 
-{% for product in products %}
-    <p>{{ product.name }}</p>
-{% endfor %}
+{% block content %}
+    {% for product in products %}
+        <p>{{ product.name }}</p>
+    {% endfor %}
+{% endblock %}
