@@ -9,11 +9,11 @@
 
     <div class="navbar">
 
-        <div class="logo">
+        <div>
             <a href="{% url 'home' %}" class="logo-button">FitSprzęt</a>
         </div>
 
-        <div class="nav-actions">
+        <div>
             {% if user.is_authenticated %}
 {#                <a href="{% url 'profile_settings' %}" class="login-button">Witaj {{ user.first_name }}</a>#}
                 <a href="{% url 'logout' %}" class="login-button">Witaj {{ user.first_name }}</a>

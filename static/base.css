@@ -14,13 +14,6 @@ body {
     right: 0;
 }
 
-.nav-actions{
-
-}
-
-.logo{
-
-}
 
 .logo-button{
     font-family: Arial, serif;
@@ -61,5 +54,10 @@ body {
     color: green;
 }
 
+.content{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
 
