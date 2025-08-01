@@ -26,6 +26,10 @@
     margin-bottom: 14px;
 }
 
+.item-image:hover{
+    transform: scale(1.07);
+}
+
 .item-title {
     font-size: 1.14em;
     font-weight: bold;
