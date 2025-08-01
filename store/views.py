@@ -54,3 +54,10 @@ def register_user(request):
     else:
         form = RegisterForm()
     return render(request,'register.html',{'form':form})
+
+
+def product_details(request,id):
+    product = Product.objects.get(pk=id)
+    category = product.category
+    similar_products = Product.objects.filter(category=category)
+    return render(request, 'product_details.html', {'product':product, 'similar_products':similar_products})

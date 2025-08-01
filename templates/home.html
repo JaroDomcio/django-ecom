@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block head %}
-    <link rel="stylesheet" href="{% static 'item_list.css' %}">
+    <link rel="stylesheet" href="{% static 'product_list.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -10,8 +10,7 @@
         {% for product in products %}
             <div class="item-card">
                 <img src="{{ product.image.url }}" alt="{{ product.name }}" class="item-image">
-                <h3 class="item-title">{{ product.name }}</h3>
-{#                <a href="{% url 'item_details' product.id %}" class="item-title">{{ product.name }}</a>#}
+                <a href="{% url 'product_details' product.id %}" class="item-title">{{ product.name }}</a>
                 <p class="item-price">{{ product.price }} zł</p>
                 <p class="item-category">{{ product.category.name }}</p>
                 <p class="item-description">
