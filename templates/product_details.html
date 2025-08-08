@@ -26,9 +26,10 @@
                 {% if product.description %}
                     <div class="product-description">{{ product.description }}</div>
                 {% endif %}
-                <form style="margin:18px 0;">
+                <form action="{% url 'cart_add' product.id %}" method="post" style="margin:18px 0;">
+                    {% csrf_token %}
                     <label for="amount">Ilość:</label>
-                    <input type="number" id="amount" value="1" min="1" style="width: 55px; margin-left:8px;">
+                    <input type="number" id="amount" name="quantity" value="1" min="1" style="width: 55px; margin-left:8px;">
                     <button type="submit" class="cart-btn">🛒 Dodaj do koszyka</button>
                 </form>
             </div>

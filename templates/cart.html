@@ -2,5 +2,11 @@
 
 
 {% block content %}
-
+    {% if cart.cart %}
+        {% for item in cart %}
+            <p>{{ item.product.name }}</p>
+        {% endfor %}
+    {% else %}
+        <h1>koszyk jest pusty</h1>
+    {% endif %}
 {% endblock %}
