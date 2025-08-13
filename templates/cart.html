@@ -1,12 +1,42 @@
-{% include 'base.html' %}
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'cart.css' %}">
+{% endblock %}
 
 
 {% block content %}
+<div class="cart-container">
+    <h1>🛒 Twój koszyk</h1>
+
     {% if cart.cart %}
-        {% for item in cart %}
-            <p>{{ item.product.name }}</p>
-        {% endfor %}
+        <div class="cart-items">
+            {% for item in cart %}
+                <div class="cart-item">
+                    <div class="cart-item-image">
+                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}">
+                    </div>
+                    <div class="cart-item-details">
+                        <h2>{{ item.product.name }}</h2>
+                        <p class="cart-item-price">{{ item.price }} zł</p>
+                        <p class="cart-item-quantity">Ilość: {{ item.quantity }}</p>
+                        <p class="cart-item-total">Razem: {{ item.total_price }} zł</p>
+                        <a href="{% url 'cart_delete' item.product.id %}" class="remove-btn">Usuń</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="cart-summary">
+            <h3>Podsumowanie</h3>
+            <p class="summary-total">
+                Suma: <strong>{{ cart.get_total_price }} zł</strong>
+            </p>
+            <button class="checkout-btn">Przejdź do płatności</button>
+        </div>
     {% else %}
-        <h1>koszyk jest pusty</h1>
+        <p class="empty-cart">Koszyk jest pusty 🛒</p>
     {% endif %}
+</div>
 {% endblock %}
