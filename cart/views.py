@@ -14,9 +14,11 @@ def cart_add(request,id):
         cart.add(product, qty)
     return redirect('product_details', id=id)
 
-def cart_delete(request):
-
-    pass
+def cart_delete(request,id):
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=id)
+    cart.remove(product)
+    return redirect('cart')
 
 def cart_update(request):
     pass
