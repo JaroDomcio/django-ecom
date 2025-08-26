@@ -10,7 +10,7 @@ def cart_add(request,id):
     cart = Cart(request)
     product = get_object_or_404(Product, id=id)
     if request.method == "POST":
-        qty = int(request.POST.get('quantity', 1))  # 'quantity' - name z inputa
+        qty = int(request.POST.get('quantity', 1))
         cart.add(product, qty)
     return redirect('product_details', id=id)
 
