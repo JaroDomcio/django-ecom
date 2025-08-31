@@ -6,5 +6,60 @@
 {% endblock %}
 
 {% block content %}
-    payment
+  <h2>Płatność za zamówienie #{{ order.id }}</h2>
+
+  <section>
+    <h3>Podsumowanie zamówienia</h3>
+    {% if order.items.all %}
+      <table>
+        <thead>
+          <tr>
+            <th>Produkt</th>
+            <th>Ilość</th>
+            <th>Cena szt. (PLN)</th>
+            <th>Suma pozycji (PLN)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in order.items.all %}
+            <tr>
+              <td>{{ item.product.name }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.product.price }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <p>Brak pozycji w zamówieniu.</p>
+    {% endif %}
+  </section>
+
+  <section style="margin-top: 1rem;">
+    <p><strong>Adres:</strong> {{ order.address }}</p>
+    <p><strong>Telefon:</strong> {{ order.phone }}</p>
+  </section>
+
+  <section style="margin-top: 1rem;">
+    <h3>Status płatności</h3>
+    {% if payment %}
+      <p><strong>Status:</strong> {{ payment.get_status_display }}</p>
+      {% if payment.has_paid %}
+        <p>Płatność została dokonana {{ payment.paid_at }}</p>
+        <p>ID sesji Stripe: {{ payment.stripe_checkout_id }}</p>
+      {% else %}
+        <p>ID sesji Stripe: {{ payment.stripe_checkout_id }}</p>
+        <form method="post">
+          {% csrf_token %}
+          <button type="submit">Zapłać przez Stripe</button>
+        </form>
+      {% endif %}
+    {% else %}
+      <p>Płatność nie została jeszcze rozpoczęta.</p>
+      <form method="post">
+        {% csrf_token %}
+        <button type="submit">Zapłać przez Stripe</button>
+      </form>
+    {% endif %}
+  </section>
 {% endblock %}

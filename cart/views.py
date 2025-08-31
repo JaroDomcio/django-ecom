@@ -59,7 +59,17 @@ def checkout(request):
 
 
 def cart_payment(request):
-    order = get_object_or_404(Order, customer=request.user, status=Order.Status.PENDING)
+
+    order_id = request.session.get("current_order_id")
+    if order_id:
+        order = get_object_or_404(Order, id=order_id, customer=request.user)
+    else:
+        order = Order.objects.filter(customer=request.user, status=Order.Status.PENDING) \
+            .order_by("-created").first()
+
+    Order.objects.filter(customer=request.user,
+                         status=Order.Status.PENDING
+                         ).exclude(id=order.id).delete()
 
     if request.method == 'POST':
         line_items = []
@@ -80,21 +90,19 @@ def cart_payment(request):
             customer_email=request.user.email,
         )
 
-        # Utwórz obiekt Payment
         Payment.objects.create(
             order=order,
             stripe_checkout_id=session.id,
             status=Payment.PaymentStatus.PENDING
         )
 
-    return render(request, 'cart_payment.html')
+    return render(request, 'cart_payment.html',{"order":order})
 
 
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body
     sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
-
 
     try:
         event = stripe.Webhook.construct_event(

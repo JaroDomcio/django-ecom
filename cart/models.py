@@ -32,5 +32,3 @@ class Payment(models.Model):
             models.Index(fields=["stripe_checkout_id"]),
             models.Index(fields=["stripe_payment_intent_id"]),
         ]
-
-
