@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 
 from django.shortcuts import render, redirect, get_object_or_404, reverse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -49,23 +49,27 @@ def checkout(request):
                 status=Order.Status.PENDING
             )
             for item in cart:
-                OrderItem.objects.create(order=order,
-                                         product=item['product'],
-                                         quantity=item['quantity'])
+                OrderItem.objects.create(
+                    order=order,
+                    product=item['product'],
+                    quantity=item['quantity']
+                )
+
+            request.session["current_order_id"] = order.id
             return redirect('cart_payment')
     else:
         form = order_form()
-    return render(request, 'checkout.html', {'form':form, 'cart':cart})
-
+    return render(request, 'checkout.html', {'form': form, 'cart': cart})
 
 def cart_payment(request):
-
     order_id = request.session.get("current_order_id")
     if order_id:
         order = get_object_or_404(Order, id=order_id, customer=request.user)
     else:
-        order = Order.objects.filter(customer=request.user, status=Order.Status.PENDING) \
-            .order_by("-created").first()
+        order = Order.objects.filter(customer=request.user, status=Order.Status.PENDING)\
+                             .order_by("-created").first()
+        if not order:
+            return redirect("cart")
 
     Order.objects.filter(customer=request.user,
                          status=Order.Status.PENDING
@@ -75,10 +79,10 @@ def cart_payment(request):
         line_items = []
         for item in order.items.all():
             line_items.append({
-                "price_data":{
-                    "currency":"pln",
-                    "product_data": {"name":item.product.name},
-                    "unit_amount": int(item.product.price*100),
+                "price_data": {
+                    "currency": "pln",
+                    "product_data": {"name": item.product.name},
+                    "unit_amount": int(item.product.price * 100),
                 },
                 "quantity": item.quantity,
             })
@@ -90,20 +94,20 @@ def cart_payment(request):
             customer_email=request.user.email,
         )
 
-        Payment.objects.create(
+        Payment.objects.update_or_create(
             order=order,
-            stripe_checkout_id=session.id,
-            status=Payment.PaymentStatus.PENDING
+            defaults={"stripe_checkout_id": session.id,
+                      "status": Payment.PaymentStatus.PENDING}
         )
 
-    return render(request, 'cart_payment.html',{"order":order})
+        return redirect(session.url, code=303)
 
+    return render(request, 'cart_payment.html', {"order": order})
 
 @csrf_exempt
 def stripe_webhook(request):
     payload = request.body
     sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
-
     try:
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
@@ -130,3 +134,12 @@ def stripe_webhook(request):
         order.save(update_fields=["status"])
 
     return HttpResponse(status=200)
+
+
+def payment_success(request):
+    request.session.pop("current_order_id", None)
+    return render(request, "payment_success.html")
+
+
+def payment_cancel(request):
+    return render(request, "payment_cancel.html")

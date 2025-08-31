@@ -8,5 +8,7 @@ urlpatterns = [
     # path('cart-update', cart_update, name='cart_update'),
     path('cart-payment/',cart_payment, name='cart_payment'),
     path('checkout/', checkout, name='checkout'),
-    path("stripe/webhook/", stripe_webhook, name="stripe_webhook")
+    path("stripe/webhook/", stripe_webhook, name="stripe_webhook"),
+    path("payment/success/", payment_success, name="payment_success"),
+    path("payment/cancel/", payment_cancel, name="payment_cancel"),
 ]
