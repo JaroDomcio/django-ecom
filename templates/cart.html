@@ -33,7 +33,7 @@
             <p class="summary-total">
                 Suma: <strong>{{ cart.get_total_price }} zł</strong>
             </p>
-            <button class="checkout-btn">Przejdź do płatności</button>
+            <a href="{% url 'checkout' %}" class="checkout-btn">Przejdź do płatności</a>
         </div>
     {% else %}
         <p class="empty-cart">Koszyk jest pusty 🛒</p>

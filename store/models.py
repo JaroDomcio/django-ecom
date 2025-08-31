@@ -32,6 +32,8 @@ class Order(models.Model):
     address = models.CharField(max_length=50)
     phone = models.CharField(max_length=10)
     status = models.CharField(max_length=50,choices=Status.choices, default=Status.PENDING)
+    city = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
 
     created = models.DateTimeField(auto_now_add=True)
 
