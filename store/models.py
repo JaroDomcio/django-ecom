@@ -24,6 +24,7 @@ class Order(models.Model):
 
     class Status(models.TextChoices):
         PENDING = 'PENDING', 'pending'
+        IN_PROGRESS = 'IN_PROGRESS', 'in_progress'
         COMPLETED = 'COMPLETED', 'completed'
         CANCELLED = 'CANCELLED', 'Cancelled'
 

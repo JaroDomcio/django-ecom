@@ -89,7 +89,7 @@ def cart_payment(request):
         session = stripe.checkout.Session.create(
             mode="payment",
             line_items=line_items,
-            success_url=request.build_absolute_uri(reverse("payment_success")),
+            success_url=request.build_absolute_uri(reverse("payment_success")) + "?session_id={CHECKOUT_SESSION_ID}",
             cancel_url=request.build_absolute_uri(reverse("payment_cancel")),
             customer_email=request.user.email,
         )
@@ -104,43 +104,66 @@ def cart_payment(request):
 
     return render(request, 'cart_payment.html', {"order": order})
 
-@csrf_exempt
-def stripe_webhook(request):
-    payload = request.body
-    sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
-    try:
-        event = stripe.Webhook.construct_event(
-            payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
-        )
-    except Exception:
-        return HttpResponse(status=400)
-
-    if event["type"] == "checkout.session.completed":
-        session = event["data"]["object"]
-        checkout_id = session["id"]
-
-        try:
-            payment = Payment.objects.select_related("order").get(stripe_checkout_id=checkout_id)
-        except Payment.DoesNotExist:
-            return HttpResponse(status=200)
-
-        payment.status = Payment.PaymentStatus.PAID
-        payment.has_paid = True
-        payment.paid_at = timezone.now()
-        payment.save(update_fields=["status", "has_paid", "paid_at"])
-
-        order = payment.order
-        order.status = Order.Status.COMPLETED
-        order.save(update_fields=["status"])
-
-    return HttpResponse(status=200)
+# @csrf_exempt
+# def stripe_webhook(request):
+#     payload = request.body
+#     sig_header = request.META.get("HTTP_STRIPE_SIGNATURE", "")
+#     try:
+#         event = stripe.Webhook.construct_event(
+#             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
+#         )
+#     except Exception:
+#         return HttpResponse(status=400)
+#
+#     if event["type"] == "checkout.session.completed":
+#         session = event["data"]["object"]
+#         checkout_id = session["id"]
+#
+#         try:
+#             payment = Payment.objects.select_related("order").get(stripe_checkout_id=checkout_id)
+#         except Payment.DoesNotExist:
+#             return HttpResponse(status=200)
+#
+#         payment.status = Payment.PaymentStatus.PAID
+#         payment.has_paid = True
+#         payment.paid_at = timezone.now()
+#         payment.save(update_fields=["status", "has_paid", "paid_at"])
+#
+#         order = payment.order
+#         order.status = Order.Status.COMPLETED
+#         order.save(update_fields=["status"])
+#
+#     return HttpResponse(status=200)
 
 
 def payment_success(request):
-    cart = Cart(request)
-    cart.clear()
+    session_id = request.GET.get("session_id")
+    if not session_id:
+        return render(request, "payment_success.html")
+
+    session = stripe.checkout.Session.retrieve(session_id)
+
+    if session.payment_status == "paid":
+        try:
+            payment = Payment.objects.select_related("order").get(stripe_checkout_id=session.id)
+        except Payment.DoesNotExist:
+            payment = None
+
+        if not payment.has_paid:
+            payment.status = Payment.PaymentStatus.PAID
+            payment.has_paid = True
+            payment.paid_at = timezone.now()
+            payment.save(update_fields=["status", "has_paid", "paid_at"])
+
+            order = payment.order
+            order.status = Order.Status.IN_PROGRESS
+            order.save(update_fields=["status"])
+
+    Cart(request).clear()
     request.session.pop("current_order_id", None)
+
     return render(request, "payment_success.html")
+
 
 
 def payment_cancel(request):
