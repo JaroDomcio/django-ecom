@@ -1,3 +1,5 @@
+from urllib import request
+
 from store.models import Product
 
 class Cart():
@@ -46,9 +48,8 @@ class Cart():
         return total_price
 
     def clear(self):
-        self.cart = {}
+        self.session['cart'] = {}
         self.save()
-        return self
 
     def save(self):
         self.session.modified = True
