@@ -2,64 +2,57 @@
 {% load static %}
 
 {% block head %}
-{#    <link rel="stylesheet" href="{% static '' %}">#}
+    <link rel="stylesheet" href="{% static 'cart_payment.css' %}">
 {% endblock %}
 
 {% block content %}
+<div class="payment-box">
   <h2>Płatność za zamówienie #{{ order.id }}</h2>
 
-  <section>
-    <h3>Podsumowanie zamówienia</h3>
-    {% if order.items.all %}
-      <table>
-        <thead>
-          <tr>
-            <th>Produkt</th>
-            <th>Ilość</th>
-            <th>Cena szt. (PLN)</th>
-            <th>Suma pozycji (PLN)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in order.items.all %}
-            <tr>
-              <td>{{ item.product.name }}</td>
-              <td>{{ item.quantity }}</td>
-              <td>{{ item.product.price }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% else %}
-      <p>Brak pozycji w zamówieniu.</p>
-    {% endif %}
-  </section>
+  <h3>Podsumowanie zamówienia</h3>
+  {% if order.items.all %}
+  <table>
+    <thead>
+      <tr>
+        <th>Produkt</th>
+        <th>Ilość</th>
+        <th>Cena szt. (PLN)</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for item in order.items.all %}
+      <tr>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.product.price }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Brak pozycji w zamówieniu.</p>
+  {% endif %}
 
-  <section style="margin-top: 1rem;">
+  <div class="order-meta">
     <p><strong>Adres:</strong> {{ order.address }}</p>
     <p><strong>Telefon:</strong> {{ order.phone }}</p>
-  </section>
+  </div>
 
-  <section style="margin-top: 1rem;">
-    <h3>Status płatności</h3>
-    {% if payment %}
-      <p><strong>Status:</strong> {{ payment.get_status_display }}</p>
-      {% if payment.has_paid %}
-        <p>Płatność została dokonana {{ payment.paid_at }}</p>
-        <p>ID sesji Stripe: {{ payment.stripe_checkout_id }}</p>
-      {% else %}
-        <p>ID sesji Stripe: {{ payment.stripe_checkout_id }}</p>
-        <form method="post">
-          {% csrf_token %}
-          <button type="submit">Zapłać przez Stripe</button>
-        </form>
-      {% endif %}
-    {% else %}
-      <p>Płatność nie została jeszcze rozpoczęta.</p>
-      <form method="post">
-        {% csrf_token %}
-        <button type="submit">Zapłać przez Stripe</button>
-      </form>
+  <h3>Status płatności</h3>
+  {% if payment %}
+    <p><strong>Status:</strong> {{ payment.get_status_display }}</p>
+    {% if not payment.has_paid %}
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="pay-btn">Zapłać przez Stripe</button>
+    </form>
     {% endif %}
-  </section>
+  {% else %}
+    <p>Płatność nie została jeszcze rozpoczęta.</p>
+    <form method="post">
+      {% csrf_token %}
+      <button type="submit" class="pay-btn">Zapłać przez Stripe</button>
+    </form>
+  {% endif %}
+</div>
 {% endblock %}

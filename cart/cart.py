@@ -45,6 +45,10 @@ class Cart():
             total_price += float(item['price']) * item['quantity']
         return total_price
 
+    def clear(self):
+        self.cart = {}
+        self.save()
+        return self
 
     def save(self):
         self.session.modified = True

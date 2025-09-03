@@ -1,2 +1,14 @@
-<h2>Dziękujemy! Płatność przyjęta.</h2>
+{% extends 'base.html' %}
+{% load static %}
 
+{% block head %}
+    <link rel="stylesheet" href="{% static 'payment_success_cancel.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="success-container">
+    <h2>Dziękujemy! Płatność została przyjęta.</h2>
+    <p>Twoje zamówienie jest w trakcie realizacji.</p>
+    <a href="{% url 'home' %}" class="home-btn">Wróć do sklepu</a>
+</div>
+{% endblock %}

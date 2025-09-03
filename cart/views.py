@@ -137,6 +137,8 @@ def stripe_webhook(request):
 
 
 def payment_success(request):
+    cart = Cart(request)
+    cart.clear()
     request.session.pop("current_order_id", None)
     return render(request, "payment_success.html")
 

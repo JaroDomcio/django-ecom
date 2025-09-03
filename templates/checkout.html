@@ -2,14 +2,20 @@
 {% load static %}
 
 {% block head %}
-{#    <link rel="stylesheet" href="{% static '' %}">#}
+    <link rel="stylesheet" href="{% static 'checkout.css' %}">
 {% endblock %}
 
 {% block content %}
-    <p>Wpisz swoje dane</p>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Dalej</button>
-    </form>
+    <div class="form-container">
+        <div>
+            <p>Wpisz swoje dane</p>
+        </div>
+        <div>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Dalej</button>
+            </form>
+        </div>
+    </div>
 {% endblock %}

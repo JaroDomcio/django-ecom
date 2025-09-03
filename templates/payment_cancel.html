@@ -1,2 +1,14 @@
-<h2>Płatność anulowana</h2>
-<p>Możesz spróbować ponownie z poziomu płatności.</p>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block head %}
+    <link rel="stylesheet" href="{% static 'payment_success_cancel.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="cancel-container">
+    <h2>Płatność anulowana</h2>
+    <p>Twoje zamówienie nie zostało opłacone. Możesz spróbować ponownie.</p>
+    <a href="{% url 'cart' %}" class="home-btn">Wróć do koszyka</a>
+</div>
+{% endblock %}
